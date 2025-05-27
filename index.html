@@ -78,7 +78,7 @@
       to { opacity: 1; }
     }
 
-    /* 各自設定大小與位置 */
+    /* 個別按鈕設定 */
     #startBtn {
       width: 60%;
       max-width: 400px;
@@ -88,17 +88,31 @@
     }
 
     #optionABtn {
-      width: 30%;
+      width: 25%;
       max-width: 250px;
-      top: 70%;
-      left: 10%;
+      top: 60%;
+      left: 20%;
     }
 
     #optionBBtn {
-      width: 30%;
+      width: 25%;
       max-width: 250px;
-      top: 70%;
-      right: 10%;
+      top: 60%;
+      right: 20%;
+    }
+
+    #backBtn {
+      bottom: 50px;
+      right: 100px;
+      width: 60px;
+      height: auto;
+    }
+
+    #homeBtn {
+      bottom: 50px;
+      right: 20px;
+      width: 60px;
+      height: auto;
     }
   </style>
 </head>
@@ -118,6 +132,8 @@
         <img id="startBtn" class="img-button" src="images/startButton.png" alt="Start" />
         <img id="optionABtn" class="img-button hidden" src="images/buttun3A.png" alt="Option A" />
         <img id="optionBBtn" class="img-button hidden" src="images/buttun3B.png" alt="Option B" />
+        <img id="backBtn" class="img-button" src="images/back.png" alt="Back" />
+        <img id="homeBtn" class="img-button" src="images/home.png" alt="Home" />
       </div>
     </div>
   </div>
@@ -128,9 +144,11 @@
     const startBtn = document.getElementById('startBtn');
     const optionABtn = document.getElementById('optionABtn');
     const optionBBtn = document.getElementById('optionBBtn');
+    const backBtn = document.getElementById('backBtn');
+    const homeBtn = document.getElementById('homeBtn');
 
-    // 開始遊戲
-    startBtn.onclick = () => {
+    // 將 page2 初始化動作抽成函數
+    function showPage2() {
       startBtn.classList.add('hidden');
       bgVideo.pause();
       bgVideo.style.display = 'none';
@@ -140,6 +158,11 @@
       mainVideo.style.display = 'block';
       mainVideo.play();
 
+      optionABtn.classList.add('hidden');
+      optionBBtn.classList.add('hidden');
+      optionABtn.classList.remove('fade-in');
+      optionBBtn.classList.remove('fade-in');
+
       setTimeout(() => {
         mainVideo.pause();
         optionABtn.classList.remove('hidden');
@@ -147,6 +170,11 @@
         optionABtn.classList.add('fade-in');
         optionBBtn.classList.add('fade-in');
       }, 4000);
+    }
+
+    // 開始遊戲按鈕呼叫初始化page2
+    startBtn.onclick = () => {
+      showPage2();
     };
 
     // Option A
@@ -171,6 +199,25 @@
       mainVideo.style.display = 'block';
       mainVideo.play();
     }
+
+    // 上一頁，呼叫 page2 初始化
+    backBtn.onclick = () => {
+      showPage2();
+    };
+
+    // 返回主頁
+    homeBtn.onclick = () => {
+      mainVideo.pause();
+      mainVideo.style.display = 'none';
+      bgVideo.style.display = 'block';
+      bgVideo.play();
+
+      startBtn.classList.remove('hidden');
+      optionABtn.classList.add('hidden');
+      optionBBtn.classList.add('hidden');
+      optionABtn.classList.remove('fade-in');
+      optionBBtn.classList.remove('fade-in');
+    };
   </script>
 </body>
 </html>
