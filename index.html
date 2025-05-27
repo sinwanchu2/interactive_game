@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Interactive Game</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: black;
+      height: 100%;
+      overflow: hidden;
+    }
+
+    #contentWrapper {
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    #gameContainer {
+      position: relative;
+      width: 100%;
+      max-height: 100vh;
+      aspect-ratio: 9 / 16;
+      background: #000;
+      overflow: hidden;
+    }
+
+    video {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      top: 0;
+      left: 0;
+      z-index: 1;
+      display: none;
+    }
+
+    #bgVideo {
+      display: block;
+    }
+
+    #content {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 3;
+      pointer-events: none;
+    }
+
+    .img-button {
+      position: absolute;
+      pointer-events: auto;
+      cursor: pointer;
+      opacity: 1;
+      transition: opacity 0.5s ease;
+      z-index: 5;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .fade-in {
+      display: block;
+      opacity: 0;
+      animation: fadeIn 0.5s forwards;
+    }
+
+    @keyframes fadeIn {
+      to { opacity: 1; }
+    }
+
+    /* 各自設定大小與位置 */
+    #startBtn {
+      width: 60%;
+      max-width: 400px;
+      top: 59%;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    #optionABtn {
+      width: 30%;
+      max-width: 250px;
+      top: 70%;
+      left: 10%;
+    }
+
+    #optionBBtn {
+      width: 30%;
+      max-width: 250px;
+      top: 70%;
+      right: 10%;
+    }
+  </style>
+</head>
+<body>
+  <div id="contentWrapper">
+    <div id="gameContainer">
+      <!-- 背景影片 -->
+      <video id="bgVideo" autoplay muted loop playsinline>
+        <source src="videos/page1.mp4" type="video/mp4" />
+      </video>
+
+      <!-- 主影片 -->
+      <video id="mainVideo" muted playsinline></video>
+
+      <!-- 圖片按鈕層 -->
+      <div id="content">
+        <img id="startBtn" class="img-button" src="images/startButton.png" alt="Start" />
+        <img id="optionABtn" class="img-button hidden" src="images/buttun3A.png" alt="Option A" />
+        <img id="optionBBtn" class="img-button hidden" src="images/buttun3B.png" alt="Option B" />
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const bgVideo = document.getElementById('bgVideo');
+    const mainVideo = document.getElementById('mainVideo');
+    const startBtn = document.getElementById('startBtn');
+    const optionABtn = document.getElementById('optionABtn');
+    const optionBBtn = document.getElementById('optionBBtn');
+
+    // 開始遊戲
+    startBtn.onclick = () => {
+      startBtn.classList.add('hidden');
+      bgVideo.pause();
+      bgVideo.style.display = 'none';
+
+      mainVideo.src = 'videos/page2.mp4';
+      mainVideo.currentTime = 0;
+      mainVideo.style.display = 'block';
+      mainVideo.play();
+
+      setTimeout(() => {
+        mainVideo.pause();
+        optionABtn.classList.remove('hidden');
+        optionBBtn.classList.remove('hidden');
+        optionABtn.classList.add('fade-in');
+        optionBBtn.classList.add('fade-in');
+      }, 4000);
+    };
+
+    // Option A
+    optionABtn.onclick = () => {
+      goToPageX('videos/page3a.mp4');
+    };
+
+    // Option B
+    optionBBtn.onclick = () => {
+      goToPageX('videos/page3b.mp4');
+    };
+
+    // 播放指定頁面
+    function goToPageX(videoSrc) {
+      optionABtn.classList.add('hidden');
+      optionBBtn.classList.add('hidden');
+      optionABtn.classList.remove('fade-in');
+      optionBBtn.classList.remove('fade-in');
+
+      mainVideo.src = videoSrc;
+      mainVideo.currentTime = 0;
+      mainVideo.style.display = 'block';
+      mainVideo.play();
+    }
+  </script>
+</body>
+</html>
