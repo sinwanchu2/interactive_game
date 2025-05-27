@@ -2,11 +2,12 @@
 <html lang="zh-Hant">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no" />
   <title>Interactive Game</title>
   <style>
     html, body {
-      margin: 0; padding: 0;
+      margin: 0;
+      padding: 0;
       background: black;
       height: 100%;
       overflow: hidden;
@@ -34,7 +35,8 @@
       width: 100%;
       height: 100%;
       object-fit: cover;
-      top: 0; left: 0;
+      top: 0;
+      left: 0;
       z-index: 1;
       display: none;
     }
@@ -45,7 +47,8 @@
 
     #content {
       position: absolute;
-      top: 0; left: 0;
+      top: 0;
+      left: 0;
       width: 100%;
       height: 100%;
       z-index: 3;
@@ -62,11 +65,11 @@
     }
 
     .hidden {
-      display: none !important;
+      display: none;
     }
 
     .fade-in {
-      display: block !important;
+      display: block;
       opacity: 0;
       animation: fadeIn 0.5s forwards;
     }
@@ -115,12 +118,15 @@
 <body>
   <div id="contentWrapper">
     <div id="gameContainer">
+      <!-- 背景影片 -->
       <video id="bgVideo" autoplay muted loop playsinline>
         <source src="videos/page1.mp4" type="video/mp4" />
       </video>
 
+      <!-- 主影片 -->
       <video id="mainVideo" muted playsinline></video>
 
+      <!-- 圖片按鈕層 -->
       <div id="content">
         <img id="startBtn" class="img-button" src="images/startButton.png" alt="Start" />
         <img id="optionABtn" class="img-button hidden" src="images/buttun3A.png" alt="Option A" />
@@ -142,23 +148,12 @@
 
     let currentPage = 'page1'; // 初始狀態
 
-    function showPage1() {
-      currentPage = 'page1';
+    // 開始遊戲 → 去 Page2
+    startBtn.onclick = () => {
+      showPage2();
+    };
 
-      mainVideo.pause();
-      mainVideo.style.display = 'none';
-
-      bgVideo.style.display = 'block';
-      bgVideo.play();
-
-      startBtn.classList.remove('hidden');
-
-      optionABtn.classList.add('hidden');
-      optionBBtn.classList.add('hidden');
-      optionABtn.classList.remove('fade-in');
-      optionBBtn.classList.remove('fade-in');
-    }
-
+    // 顯示 Page2
     function showPage2() {
       currentPage = 'page2';
 
@@ -177,7 +172,6 @@
       optionBBtn.classList.remove('fade-in');
 
       setTimeout(() => {
-        if(currentPage !== 'page2') return; // 預防快速切換
         mainVideo.pause();
         optionABtn.classList.remove('hidden');
         optionBBtn.classList.remove('hidden');
@@ -186,6 +180,7 @@
       }, 4000);
     }
 
+    // Option A or B → Page3a / Page3b
     function goToPageX(videoSrc) {
       currentPage = videoSrc.includes('3a') ? 'page3a' : 'page3b';
 
@@ -200,10 +195,6 @@
       mainVideo.play();
     }
 
-    startBtn.onclick = () => {
-      showPage2();
-    };
-
     optionABtn.onclick = () => {
       goToPageX('videos/page3a.mp4');
     };
@@ -212,31 +203,45 @@
       goToPageX('videos/page3b.mp4');
     };
 
+    // 上一頁邏輯
     backBtn.onclick = () => {
       if (currentPage === 'page1') {
-        console.log("已經係主頁，上一頁唔做嘢");
-        return;
+       console.log("已經係主頁，上一頁唔做嘢");
+       return;
       }
+
       if (currentPage === 'page2') {
-        showPage1();
+       // 返回主頁
+        homeBtn.onclick();
         return;
       }
+
       if (currentPage === 'page3a' || currentPage === 'page3b') {
+      // 返回 Page2
         showPage2();
-        return;
       }
     };
 
+    // 返回主頁（Page1）
     homeBtn.onclick = () => {
       if (currentPage === 'page1') {
         console.log("已經係主頁，Home 無需處理");
         return;
       }
-      showPage1();
-    };
 
-    // 初始化
-    showPage1();
+      currentPage = 'page1';
+
+      mainVideo.pause();
+      mainVideo.style.display = 'none';
+      bgVideo.style.display = 'block';
+      bgVideo.play();
+
+      startBtn.classList.remove('hidden');
+      optionABtn.classList.add('hidden');
+      optionBBtn.classList.add('hidden');
+      optionABtn.classList.remove('fade-in');
+      optionBBtn.classList.remove('fade-in');
+    };
   </script>
 </body>
 </html>
