@@ -6,8 +6,7 @@
   <title>Interactive Game</title>
   <style>
     html, body {
-      margin: 0;
-      padding: 0;
+      margin: 0; padding: 0;
       background: black;
       height: 100%;
       overflow: hidden;
@@ -35,8 +34,7 @@
       width: 100%;
       height: 100%;
       object-fit: cover;
-      top: 0;
-      left: 0;
+      top: 0; left: 0;
       z-index: 1;
       display: none;
     }
@@ -47,8 +45,7 @@
 
     #content {
       position: absolute;
-      top: 0;
-      left: 0;
+      top: 0; left: 0;
       width: 100%;
       height: 100%;
       z-index: 3;
@@ -65,11 +62,11 @@
     }
 
     .hidden {
-      display: none;
+      display: none !important;
     }
 
     .fade-in {
-      display: block;
+      display: block !important;
       opacity: 0;
       animation: fadeIn 0.5s forwards;
     }
@@ -78,7 +75,6 @@
       to { opacity: 1; }
     }
 
-    /* 個別按鈕設定 */
     #startBtn {
       width: 60%;
       max-width: 400px;
@@ -101,36 +97,30 @@
       right: 20%;
     }
 
-    #homeBtn {
-      top: 5%;
-      right: 5%;
-      width: 12vw;
-      max-width: 80px;
-      height: auto;
-    }
-
     #backBtn {
-      top: 5%;
-      right: 20%;
-      width: 12vw;
-      max-width: 80px;
+      top: 50px;
+      right: 90px;
+      width: 50px;
       height: auto;
     }
 
+    #homeBtn {
+      top: 50px;
+      right: 20px;
+      width: 50px;
+      height: auto;
+    }
   </style>
 </head>
 <body>
   <div id="contentWrapper">
     <div id="gameContainer">
-      <!-- 背景影片 -->
       <video id="bgVideo" autoplay muted loop playsinline>
         <source src="videos/page1.mp4" type="video/mp4" />
       </video>
 
-      <!-- 主影片 -->
       <video id="mainVideo" muted playsinline></video>
 
-      <!-- 圖片按鈕層 -->
       <div id="content">
         <img id="startBtn" class="img-button" src="images/startButton.png" alt="Start" />
         <img id="optionABtn" class="img-button hidden" src="images/buttun3A.png" alt="Option A" />
@@ -150,8 +140,28 @@
     const backBtn = document.getElementById('backBtn');
     const homeBtn = document.getElementById('homeBtn');
 
-    // 將 page2 初始化動作抽成函數
+    let currentPage = 'page1'; // 初始狀態
+
+    function showPage1() {
+      currentPage = 'page1';
+
+      mainVideo.pause();
+      mainVideo.style.display = 'none';
+
+      bgVideo.style.display = 'block';
+      bgVideo.play();
+
+      startBtn.classList.remove('hidden');
+
+      optionABtn.classList.add('hidden');
+      optionBBtn.classList.add('hidden');
+      optionABtn.classList.remove('fade-in');
+      optionBBtn.classList.remove('fade-in');
+    }
+
     function showPage2() {
+      currentPage = 'page2';
+
       startBtn.classList.add('hidden');
       bgVideo.pause();
       bgVideo.style.display = 'none';
@@ -167,6 +177,7 @@
       optionBBtn.classList.remove('fade-in');
 
       setTimeout(() => {
+        if(currentPage !== 'page2') return; // 預防快速切換
         mainVideo.pause();
         optionABtn.classList.remove('hidden');
         optionBBtn.classList.remove('hidden');
@@ -175,23 +186,9 @@
       }, 4000);
     }
 
-    // 開始遊戲按鈕呼叫初始化page2
-    startBtn.onclick = () => {
-      showPage2();
-    };
-
-    // Option A
-    optionABtn.onclick = () => {
-      goToPageX('videos/page3a.mp4');
-    };
-
-    // Option B
-    optionBBtn.onclick = () => {
-      goToPageX('videos/page3b.mp4');
-    };
-
-    // 播放指定頁面
     function goToPageX(videoSrc) {
+      currentPage = videoSrc.includes('3a') ? 'page3a' : 'page3b';
+
       optionABtn.classList.add('hidden');
       optionBBtn.classList.add('hidden');
       optionABtn.classList.remove('fade-in');
@@ -203,24 +200,43 @@
       mainVideo.play();
     }
 
-    // 上一頁，呼叫 page2 初始化
-    backBtn.onclick = () => {
+    startBtn.onclick = () => {
       showPage2();
     };
 
-    // 返回主頁
-    homeBtn.onclick = () => {
-      mainVideo.pause();
-      mainVideo.style.display = 'none';
-      bgVideo.style.display = 'block';
-      bgVideo.play();
-
-      startBtn.classList.remove('hidden');
-      optionABtn.classList.add('hidden');
-      optionBBtn.classList.add('hidden');
-      optionABtn.classList.remove('fade-in');
-      optionBBtn.classList.remove('fade-in');
+    optionABtn.onclick = () => {
+      goToPageX('videos/page3a.mp4');
     };
+
+    optionBBtn.onclick = () => {
+      goToPageX('videos/page3b.mp4');
+    };
+
+    backBtn.onclick = () => {
+      if (currentPage === 'page1') {
+        console.log("已經係主頁，上一頁唔做嘢");
+        return;
+      }
+      if (currentPage === 'page2') {
+        showPage1();
+        return;
+      }
+      if (currentPage === 'page3a' || currentPage === 'page3b') {
+        showPage2();
+        return;
+      }
+    };
+
+    homeBtn.onclick = () => {
+      if (currentPage === 'page1') {
+        console.log("已經係主頁，Home 無需處理");
+        return;
+      }
+      showPage1();
+    };
+
+    // 初始化
+    showPage1();
   </script>
 </body>
 </html>
